@@ -4,7 +4,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
 import { getProjects } from "@/api/ProjectAPI"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from '@/hooks/useAuth'
 import DeleteProjectModal from '@/components/projects/DeleteProjectModal'
 
@@ -15,7 +15,7 @@ const DashboardPage = () => {
 
     const { isLoading: authLoading, isAuthorization } = useAuth()
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['projects'],
         queryFn: getProjects,
         retry: 1
@@ -23,7 +23,9 @@ const DashboardPage = () => {
 
     if (isLoading && authLoading) return 'cargando...'
 
-    if(data) return (
+    if (isError) return <Navigate to={'/auth/login'} />
+
+    if (data) return (
         <>
             <h1 className=" text-5xl font-black">Mis Proyectos</h1>
             <p className=" text-2xl font-light text-gray-500 mt-5">Maneja y administra tus proyectos</p>
@@ -43,8 +45,8 @@ const DashboardPage = () => {
                                 <div className="min-w-0 flex-auto space-y-2">
                                     <div className=' mb-2'>
                                         {isAuthorization(project.manager) ?
-                                        <p className=' font-bold text-xs uppercase bg-indigo-50 text-indigo-500 border-2 border-indigo-500 rounded-lg inline-block py-1 px-5'>Manager</p> :
-                                        <p className=' font-bold text-xs uppercase bg-green-50 text-green-500 border-2 border-green-500 rounded-lg inline-block py-1 px-5'>Colaborador</p>}
+                                            <p className=' font-bold text-xs uppercase bg-indigo-50 text-indigo-500 border-2 border-indigo-500 rounded-lg inline-block py-1 px-5'>Manager</p> :
+                                            <p className=' font-bold text-xs uppercase bg-green-50 text-green-500 border-2 border-green-500 rounded-lg inline-block py-1 px-5'>Colaborador</p>}
                                     </div>
                                     <Link to={`projects/${project._id}`}
                                         className="text-gray-600 cursor-pointer hover:underline text-3xl font-bold"

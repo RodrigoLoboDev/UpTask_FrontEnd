@@ -11,7 +11,7 @@ export const useAuth = () => {
     })
 
     const isAuthorization = (manager : ProjectType['manager']) => manager.toString() === data?._id.toString()
-
+    
     return {
         data, 
         isError, 
